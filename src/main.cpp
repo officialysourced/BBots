@@ -12,12 +12,12 @@ void combinedAutonRoutine();
 // Chassis constructor
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
-    {1, 2},      // Left Chassis Ports (negative port will reverse it!)
-    {-4, -5},    // Right Chassis Ports (negative port will reverse it!)
+    {1, 2},         // Left Chassis Ports (negative port will reverse it!)
+    {-4, -5},       // Right Chassis Ports (negative port will reverse it!)
 
-    7,           // IMU Port
-    4.125,       // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
-    343);        // Wheel RPM = cartridge * (motor gear / wheel gear)
+    7,              // IMU Port
+    4.125,          // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
+    343);           // Wheel RPM = cartridge * (motor gear / wheel gear)
 
 // Define your intake motor here.
 // Make sure to change '11' to the actual port number your intake motor is connected to.
@@ -28,8 +28,8 @@ pros::Motor intake(11);
 //   - you should get positive values on the encoders going FORWARD and RIGHT
 // - `2.75` is the wheel diameter
 // - `4.0` is the distance from the center of the wheel to the center of the robot
-// ez::tracking_wheel horiz_tracker(8, 2.75, 4.0);   // This tracking wheel is perpendicular to the drive wheels
-// ez::tracking_wheel vert_tracker(9, 2.75, 4.0);    // This tracking wheel is parallel to the drive wheels
+// ez::tracking_wheel horiz_tracker(8, 2.75, 4.0);    // This tracking wheel is perpendicular to the drive wheels
+// ez::tracking_wheel vert_tracker(9, 2.75, 4.0);     // This tracking wheel is parallel to the drive wheels
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -55,7 +55,7 @@ void initialize() {
   // Configure your chassis controls
   chassis.opcontrol_curve_buttons_toggle(true);   // Enables modifying the controller curve with buttons on the joysticks
   chassis.opcontrol_drive_activebrake_set(0.0);   // Sets the active brake kP. We recommend ~2.   0 will disable.
-  chassis.opcontrol_curve_default_set(0.0, 0.0);   // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)
+  chassis.opcontrol_curve_default_set(0.0, 0.0);  // Defaults for curve. If using tank, only the first parameter is used. (Comment this line out if you have an SD card!)
 
   // Set the drive to your own constants from autons.cpp!
   default_constants();
@@ -126,8 +126,8 @@ void autonomous() {
   chassis.pid_targets_reset();          // Resets PID targets to 0
   chassis.drive_imu_reset();            // Reset gyro position to 0
   chassis.drive_sensor_reset();         // Reset drive sensors to 0
-  chassis.odom_xyt_set(0_in, 0_in, 0_deg);    // Set the current position, you can start at a specific position with this
-  chassis.drive_brake_set(MOTOR_BRAKE_HOLD);  // Set motors to hold.   This helps autonomous consistency
+  chassis.odom_xyt_set(0_in, 0_in, 0_deg);     // Set the current position, you can start at a specific position with this
+  chassis.drive_brake_set(MOTOR_BRAKE_HOLD);   // Set motors to hold.   This helps autonomous consistency
 
   /*
   Odometry and Pure Pursuit are not magic
@@ -152,10 +152,10 @@ void screen_print_tracker(ez::tracking_wheel *tracker, std::string name, int lin
   std::string tracker_value = "", tracker_width = "";
   // Check if the tracker exists
   if (tracker != nullptr) {
-    tracker_value = name + " tracker: " + util::to_string_with_precision(tracker->get());        // Make text for the tracker value
-    tracker_width = "   width: " + util::to_string_with_precision(tracker->distance_to_center_get());   // Make text for the distance to center
+    tracker_value = name + " tracker: " + util::to_string_with_precision(tracker->get());      // Make text for the tracker value
+    tracker_width = "   width: " + util::to_string_with_precision(tracker->distance_to_center_get());  // Make text for the distance to center
   }
-  ez::screen_print(tracker_value + tracker_width, line);  // Print final tracker text
+  ez::screen_print(tracker_value + tracker_width, line); // Print final tracker text
 }
 
 /**
@@ -173,9 +173,9 @@ void ez_screen_task() {
         if (ez::as::page_blank_is_on(0)) {
           // Display X, Y, and Theta
           ez::screen_print("x: " + util::to_string_with_precision(chassis.odom_x_get()) +
-                                 "\ny: " + util::to_string_with_precision(chassis.odom_y_get()) +
-                                 "\na: " + util::to_string_with_precision(chassis.odom_theta_get()),
-                                 1);  // Don't override the top Page line
+                                    "\ny: " + util::to_string_with_precision(chassis.odom_y_get()) +
+                                    "\na: " + util::to_string_with_precision(chassis.odom_theta_get()),
+                                    1);   // Don't override the top Page line
 
           // Display all trackers that are being used
           screen_print_tracker(chassis.odom_tracker_left, "l", 4);
