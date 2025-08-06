@@ -12,12 +12,16 @@ void combinedAutonRoutine();
 // Chassis constructor
 ez::Drive chassis(
     // These are your drive motors, the first motor is used for sensing!
-    {1, 2},     // Left Chassis Ports (negative port will reverse it!)
-    {-4, -5},   // Right Chassis Ports (negative port will reverse it!)
+    {1, 2},      // Left Chassis Ports (negative port will reverse it!)
+    {-4, -5},    // Right Chassis Ports (negative port will reverse it!)
 
-    7,          // IMU Port
-    4.125,      // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
-    343);       // Wheel RPM = cartridge * (motor gear / wheel gear)
+    7,           // IMU Port
+    4.125,       // Wheel Diameter (Remember, 4" wheels without screw holes are actually 4.125!)
+    343);        // Wheel RPM = cartridge * (motor gear / wheel gear)
+
+// Define your intake motor here.
+// Make sure to change '11' to the actual port number your intake motor is connected to.
+pros::Motor intake(11); 
 
 // Uncomment the trackers you're using here!
 // - `8` and `9` are smart ports (making these negative will reverse the sensor)
@@ -148,7 +152,7 @@ void screen_print_tracker(ez::tracking_wheel *tracker, std::string name, int lin
   std::string tracker_value = "", tracker_width = "";
   // Check if the tracker exists
   if (tracker != nullptr) {
-    tracker_value = name + " tracker: " + util::to_string_with_precision(tracker->get());          // Make text for the tracker value
+    tracker_value = name + " tracker: " + util::to_string_with_precision(tracker->get());        // Make text for the tracker value
     tracker_width = "   width: " + util::to_string_with_precision(tracker->distance_to_center_get());   // Make text for the distance to center
   }
   ez::screen_print(tracker_value + tracker_width, line);  // Print final tracker text
@@ -169,9 +173,9 @@ void ez_screen_task() {
         if (ez::as::page_blank_is_on(0)) {
           // Display X, Y, and Theta
           ez::screen_print("x: " + util::to_string_with_precision(chassis.odom_x_get()) +
-                               "\ny: " + util::to_string_with_precision(chassis.odom_y_get()) +
-                               "\na: " + util::to_string_with_precision(chassis.odom_theta_get()),
-                               1);  // Don't override the top Page line
+                                 "\ny: " + util::to_string_with_precision(chassis.odom_y_get()) +
+                                 "\na: " + util::to_string_with_precision(chassis.odom_theta_get()),
+                                 1);  // Don't override the top Page line
 
           // Display all trackers that are being used
           screen_print_tracker(chassis.odom_tracker_left, "l", 4);
@@ -256,11 +260,22 @@ void opcontrol() {
     // chassis.opcontrol_tank();   
     // chassis.opcontrol_arcade_standard(ez::SINGLE);   
     // chassis.opcontrol_arcade_flipped(ez::SPLIT);     
-    // chassis.opcontrol_arcade_flipped(ez::SINGLE);   
+    // chassis.opcontrol_arcade_flipped(ez::SINGLE);    
 
     // . . .
     // Put more user control code here!
     // . . .
+
+    // Intake control logic
+    if (master.get_digital(DIGITAL_R1)) {
+      intake.move(127); // Spin intake forward
+    } 
+    else if (master.get_digital(DIGITAL_R2)) {
+      intake.move(-127); // Spin intake backward (outtake)
+    } 
+    else {
+      intake.move(0); // Stop intake
+    }
 
     pros::delay(ez::util::DELAY_TIME);   // This is used for timer calculations!   Keep this ez::util::DELAY_TIME
   }
